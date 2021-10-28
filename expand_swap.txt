@@ -1,0 +1,20 @@
+1. rescan
+echo "- - -" > /sys/class/scsi_host/host0/scan
+echo "- - -" > /sys/class/scsi_host/host1/scan
+echo "- - -" > /sys/class/scsi_host/host2/scan
+echo 1 > /sys/block/sdb/device/rescan
+skip 2. parted -l (verify /dev/sda = 48.3G)
+3. parted /dev/sda
+4. (parted) print free (verify free space)
+5. (parted) mkpart primary 25.8G 100% (or the end 48.3G)
+6. (parted) set 3 lvm on
+7. pvs
+7. pvcreate /dev/sda3
+vgs
+8. vgextend centos /dev/sda3
+9. swapoff -a
+10. lvresize -L+14G /dev/centos/swap
+11. lvs
+12. mkswap /dev/centos/swap
+13. swapon -a
+14. free -m
