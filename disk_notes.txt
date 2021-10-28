@@ -1,0 +1,32 @@
+1.
+echo "- - -" > /sys/class/scsi_host/host0/scan
+echo "- - -" > /sys/class/scsi_host/host1/scan
+echo "- - -" > /sys/class/scsi_host/host2/scan
+echo 1 > /sys/block/sdb/device/rescan
+
+2.
+parted -l (fix)
+
+3.
+parted /dev/sdb
+(parted) mkpart primary <end>G 100%
+(parted) print
+(parted) set <#> lvm on
+(parted) q
+
+4.
+pvs
+pvcreate /dev/sdb<#>
+
+5.
+vgs
+vgextend vgData /dev/sdb<#>
+
+6.
+lvs
+lvextend -l +100%FREE /dev/vgData/lvdata
+
+7.
+blkid
+df -h /srv/data
+resize2fs /dev/vgData/lvData
